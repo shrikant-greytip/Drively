@@ -27,7 +27,16 @@ const HomeStack = () => (
     />
   </Stack.Navigator>
 );
-
+const SearchStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Search"
+      component={SearchScreen}
+      options={{ headerShown: false }}
+    />
+    <Stack.Screen name="CarDetails" component={CarDetailsScreen} />
+  </Stack.Navigator>
+);
 const MainNavigator = () => {
   return (
     <Tab.Navigator
@@ -58,7 +67,7 @@ const MainNavigator = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomeStack} />
-      <Tab.Screen name="Search" component={SearchScreen} />
+      <Tab.Screen name="Search" component={SearchStack} />
       <Tab.Screen name="Bookings" component={BookingScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>

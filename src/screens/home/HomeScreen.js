@@ -1,4 +1,3 @@
-// src/screens/home/HomeScreen.js
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -9,38 +8,52 @@ import {
   Image,
   TextInput,
   FlatList,
-  Alert,
+  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import LinearGradient from 'react-native-linear-gradient';
-import { Dimensions } from 'react-native';
-const screenWidth = Dimensions.get('window').width;
 
+const screenWidth = Dimensions.get('window').width;
 
 const HomeScreen = ({ navigation }) => {
   const [searchText, setSearchText] = useState('');
   const [cars, setCars] = useState([]);
+  const [allCars, setAllCars] = useState([]);
   const [featuredCars, setFeaturedCars] = useState([]);
 
-  useEffect(() => {
-    loadCars();
-  }, []);
   const carImages = {
     tesla: require('../../assets/tesla.jpeg'),
     bmw: require('../../assets/bmwx5.webp'),
     audi: require('../../assets/audi14.webp'),
   };
-  
+
+  useEffect(() => {
+    loadCars();
+  }, []);
+
+  useEffect(() => {
+    if (searchText.trim() === '') {
+      setCars(allCars);
+      setFeaturedCars(allCars.slice(0, 3));
+    } else {
+      const filtered = allCars.filter(
+        car =>
+          car.name.toLowerCase().includes(searchText.toLowerCase()) ||
+          car.location.toLowerCase().includes(searchText.toLowerCase()),
+      );
+      setCars(filtered);
+      setFeaturedCars(filtered.slice(0, 3));
+    }
+  }, [searchText, allCars]);
 
   const loadCars = () => {
-    // Mock car data
     const mockCars = [
       {
         id: 1,
         name: 'Tesla Model 3',
         price: 89,
         rating: 4.9,
-        image: carImages?.tesla,
+        image: carImages.tesla,
         location: 'Pune, Maharashtra',
         type: 'Electric',
         features: ['Auto', 'AC', 'GPS'],
@@ -50,7 +63,7 @@ const HomeScreen = ({ navigation }) => {
         name: 'BMW X5',
         price: 150,
         rating: 4.8,
-        image: carImages?.bmw,
+        image: carImages.bmw,
         location: 'Mumbai, Maharashtra',
         type: 'SUV',
         features: ['Auto', 'AC', 'GPS', 'Leather'],
@@ -60,13 +73,14 @@ const HomeScreen = ({ navigation }) => {
         name: 'Audi A4',
         price: 120,
         rating: 4.7,
-        image: carImages?.audi,
+        image: carImages.audi,
         location: 'Pune, Maharashtra',
         type: 'Sedan',
         features: ['Auto', 'AC', 'GPS'],
       },
     ];
 
+    setAllCars(mockCars);
     setCars(mockCars);
     setFeaturedCars(mockCars.slice(0, 3));
   };
@@ -100,7 +114,6 @@ const HomeScreen = ({ navigation }) => {
       </View>
     </TouchableOpacity>
   );
-  
 
   return (
     <ScrollView style={styles.container}>
@@ -266,10 +279,9 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
   fullWidthCard: {
-    width: screenWidth - 40, // 20 padding on each side
+    width: screenWidth - 40,
     alignSelf: 'center',
   },
-
   carImage: {
     width: '100%',
     height: 180,
